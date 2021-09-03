@@ -1,0 +1,10 @@
+/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/deps/cortex_m_semihosting-17718d2cb240f5da.rmeta: /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/lib.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/macros.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/debug.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/export.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/hio.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/nr.rs
+
+/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/deps/cortex_m_semihosting-17718d2cb240f5da.d: /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/lib.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/macros.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/debug.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/export.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/hio.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/nr.rs
+
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/lib.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/macros.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/debug.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/export.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/hio.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/cortex-m-semihosting-0.3.7/src/nr.rs:

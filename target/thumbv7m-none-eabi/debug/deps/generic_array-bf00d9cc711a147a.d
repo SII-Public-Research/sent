@@ -1,0 +1,11 @@
+/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/deps/generic_array-bf00d9cc711a147a.rmeta: /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/lib.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/hex.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/impls.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/arr.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/functional.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/iter.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/sequence.rs
+
+/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/deps/generic_array-bf00d9cc711a147a.d: /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/lib.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/hex.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/impls.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/arr.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/functional.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/iter.rs /home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/sequence.rs
+
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/lib.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/hex.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/impls.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/arr.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/functional.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/iter.rs:
+/home/rustsii/.cargo/registry/src/github.com-1ecc6299db9ec823/generic-array-0.13.3/src/sequence.rs:

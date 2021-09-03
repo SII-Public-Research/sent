@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/build/typenum-89ba5d3fd6ec549d/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/build/typenum-89ba5d3fd6ec549d/out/op.rs
