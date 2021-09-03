@@ -1,3 +1,0 @@
-cargo:rustc-link-lib=static=cortex-m-semihosting
-cargo:rustc-link-search=/home/rustsii/rust/EMBEDDED_RUST/sii_rust_embedded/git-driver-sent/target/thumbv7m-none-eabi/debug/build/cortex-m-semihosting-00a758bdefab16bc/out
-cargo:rustc-cfg=thumb
