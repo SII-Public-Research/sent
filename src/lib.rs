@@ -22,7 +22,7 @@ impl<DELAY, PIN> Sent<DELAY, PIN> {
 	}
 
 	pub fn new_default(delay: DELAY, pin: PIN) -> Self {
-		Self::new(delay, pin, 4500, 15, 840, 12, 6)
+		Self::new(delay, pin, 5000, 15, 56*15, 12*15, 6)
 	}
 }
 
