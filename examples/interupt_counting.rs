@@ -1,4 +1,3 @@
-
 //#![deny(unsafe_code)]
 #![no_main]
 #![no_std]
@@ -10,21 +9,16 @@ use rtt_target::{rprintln, rtt_init_print};
 use stm32f1::stm32f103;
 use stm32f1::stm32f103::interrupt;
 
-
 use cortex_m_rt::entry;
-use stm32f1xx_hal::{
-    pac,
-};
+use stm32f1xx_hal::pac;
 
 use cortex_m::peripheral::DWT;
 
 static mut tableau: [u32; 8] = [0; 8];
 static mut COUNT: u32 = 0;
 
-
 #[interrupt]
 fn EXTI15_10() {
-
     static mut NEW_COUNT: u32 = 0;
     *NEW_COUNT = DWT::get_cycle_count();
     let temps: u32 = *NEW_COUNT / 32; //frequence
@@ -32,10 +26,10 @@ fn EXTI15_10() {
     unsafe {
         // je remet a 0 le counter DWT
         *(0xE0001004 as *mut u32) = 0;
-        // on met à 1 le bit 12 du registre pr pour valider l'interuption 
+        // on met à 1 le bit 12 du registre pr pour valider l'interuption
         *(0x40010414 as *mut u32) |= 1 << 12;
     }
-    
+
     unsafe {
         if COUNT == 0 {
             COUNT += 1;
@@ -47,12 +41,10 @@ fn EXTI15_10() {
             COUNT = 0;
         }
     }
-
 }
 
 #[entry]
 fn main() -> ! {
-
     // init de la session de debug
     rtt_init_print!();
     rprintln!("Coucou !");
@@ -61,7 +53,7 @@ fn main() -> ! {
     let mut cp = pac::CorePeripherals::take().unwrap();
 
     /****************************************************************************************/
-    /*****************              ACTIVATION DE L'INTERUPTION         *********************/
+    /*****************              ACTIVATION DE L'INTERRUPTION         *********************/
     /****************************************************************************************/
 
     unsafe {
@@ -76,14 +68,13 @@ fn main() -> ! {
 
     // allume le GPIOC
     rcc.apb2enr.modify(|_, w| w.iopcen().set_bit());
-    // allume les fonctions alternatives 
+    // allume les fonctions alternatives
     rcc.apb2enr.modify(|_, w| w.afioen().set_bit());
-
 
     /****************************************************************************************/
     /*****************              INITIALISATION DES GPIOS         ************************/
     /****************************************************************************************/
-    
+
     let gpioc = &dp.GPIOC;
 
     // configure le pin en input
@@ -91,11 +82,10 @@ fn main() -> ! {
     // configure le mode input en open_drain
     gpioc.crh.modify(|_, w| w.cnf12().open_drain());
 
+    /****************************************************************************************/
+    /*****************              INITIALISATION DE L'INTERRUPTION         *****************/
+    /****************************************************************************************/
 
-    /****************************************************************************************/
-    /*****************              INITIALISATION DE L'INTERUPTION         *****************/
-    /****************************************************************************************/
-    
     let afio = &dp.AFIO;
 
     unsafe {
@@ -116,7 +106,7 @@ fn main() -> ! {
         // je remet a 0 le counter DWT
         *(0xE0001004 as *mut u32) = 0;
     }
-    
+
     //rprintln!("{config termine !}");
 
     //let mut flash = dp.FLASH.constrain();
@@ -130,6 +120,4 @@ fn main() -> ! {
     //let freq = timer.frequency();
     //hprintln!("frequence : {:?} Hertz", freq.0).unwrap();
     loop {}
-        
 }
-
