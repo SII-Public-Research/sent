@@ -16,19 +16,24 @@ extern crate sent_driver;
 fn main() -> ! {
     rtt_init_print!();
     rprintln!("Coucou !");
-    
+
     let dp = pac::Peripherals::take().unwrap();
     let cp = cortex_m::Peripherals::take().unwrap();
     let mut rcc = dp.RCC.constrain();
     let mut flash = dp.FLASH.constrain();
     let mut gpioc = dp.GPIOC.split(&mut rcc.apb2);
     let pin = gpioc.pc10.into_push_pull_output(&mut gpioc.crh);
-    let clocks = rcc.cfgr.use_hse(8.mhz()).pclk1(36.mhz()).sysclk(72.mhz()).freeze(&mut flash.acr);
+    let clocks = rcc
+        .cfgr
+        .use_hse(8.mhz())
+        .pclk1(36.mhz())
+        .sysclk(72.mhz())
+        .freeze(&mut flash.acr);
     let delay = Delay::new(cp.SYST, clocks);
 
     let mut sent = sent_driver::Sent::new_default(delay, pin);
-    
-    loop{
+
+    loop {
         sent.send_frame(15, [0, 9, 5, 13, 8, 4], 20);
     }
 }

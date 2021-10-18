@@ -23,7 +23,6 @@ use stm32f1::stm32f103;
 // Gestion des interruptions
 use stm32f1::stm32f103::interrupt;
 
-
 #[interrupt]
 fn EXTI15_10() {
     static mut COUNT: u32 = 0;
@@ -34,15 +33,13 @@ fn EXTI15_10() {
     rprintln!("c'est la {}ieme fois", COUNT);
 
     unsafe {
-        // on met à 1 le bit 13 du registre pr pour valider l'interuption 
+        // on met à 1 le bit 13 du registre pr pour valider l'interuption
         *(0x40010414 as *mut u32) |= 1 << 13;
     }
-
 }
 
 #[entry]
 fn main() -> ! {
-
     // init de la session de debug
     rtt_init_print!();
     rprintln!("Coucou !");
@@ -65,14 +62,13 @@ fn main() -> ! {
 
     // allume le GPIOC
     rcc.apb2enr.modify(|_, w| w.iopcen().set_bit());
-    // allume les fonctions alternatives 
+    // allume les fonctions alternatives
     rcc.apb2enr.modify(|_, w| w.afioen().set_bit());
-
 
     /****************************************************************************************/
     /*****************              INITIALISATION DES GPIOS         ************************/
     /****************************************************************************************/
-    
+
     let gpioc = &dp.GPIOC;
 
     // configure le pin en input
@@ -83,7 +79,7 @@ fn main() -> ! {
     /****************************************************************************************/
     /*****************              INITIALISATION DE L'INTERUPTION         *****************/
     /****************************************************************************************/
-    
+
     let afio = &dp.AFIO;
 
     unsafe {
@@ -98,10 +94,7 @@ fn main() -> ! {
     // leve une interuption sur les fronts descendants
     exti.ftsr.write(|w| w.tr12().set_bit());
 
-
     //hprintln!("{config termine !}").unwrap();
 
-
     loop {}
-        
 }
