@@ -25,7 +25,7 @@ features = ["stm32f103", "rt"]
 
 [dependencies.stm32f1xx-hal]
 features = ["stm32f103", "rt", "medium"]
-version = "^0.7.0"
+version = "^0.6.1"
 
 
 # Access to the stm32f103 HAL.
