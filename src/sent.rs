@@ -13,7 +13,7 @@ pub fn init(dma_set: SettingDMA, dp: pac::Peripherals) -> stm32f1xx_hal::dma::dm
     let mut rcc = dp.RCC.constrain();
     //////////////////////////////    GPIOA CONFIG     /////////////////////////////
     let mut gpioa = dp.GPIOA.split(&mut rcc.apb2);
-    gpioa.pa0.into_floating_input(&mut gpioa.crl);
+    gpioa.pa4.into_floating_input(&mut gpioa.crl);
 
     let mut flash = dp.FLASH.constrain();
     rcc.cfgr.sysclk(8.mhz()).freeze(&mut flash.acr);
