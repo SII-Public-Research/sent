@@ -3,7 +3,41 @@
 //use embedded_hal::{digital::v2::InputPin, blocking::delay::DelayUs};
 
 mod receiver;
+pub mod sent;
 mod transmitter;
+
+#[derive(Clone, Copy)]
+pub struct SettingDMA {
+    pub add_periph: u32,
+    pub add_mem: u32,
+    pub nb_data: u16,
+}
+
+impl SettingDMA {
+    pub fn new() -> Self {
+        Self {
+            add_periph: 0x40000034,
+            add_mem: 0x20000200,
+            nb_data: 0x13,
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct SettingClock {
+    pub freq: f32,
+    pub period: f32,
+}
+
+impl SettingClock {
+    pub fn new() -> Self {
+        let f: f32 = 8.0;
+        Self {
+            freq: f,
+            period: 1.0 / f,
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct Sent<DELAY, PIN> {

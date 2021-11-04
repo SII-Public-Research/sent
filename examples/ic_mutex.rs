@@ -1,6 +1,8 @@
 #![no_main]
 #![no_std]
 
+use sent_driver::{SettingClock, SettingDMA};
+
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 
@@ -18,13 +20,6 @@ static MDMA: Mutex<RefCell<Option<stm32f103::DMA1>>> = Mutex::new(RefCell::new(N
 static MINT: Mutex<Cell<bool>> = Mutex::new(Cell::new(false));
 
 static mut TAB_TIME: [u16; 19] = [0; 19];
-
-const ADD_TIM2_CCR1: u32 = 0x40000034;
-const ADD_SRAM: u32 = 0x20000200;
-const NB_DATA_DMA: u16 = 0x13;
-
-const TIMER_FREQ: f32 = 8.0; // Timer freq  MHz
-const TIMER_PERIOD: f32 = 1.0 / TIMER_FREQ; // Timer period us
 
 #[interrupt]
 fn DMA1_CHANNEL5() {

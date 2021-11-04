@@ -1,23 +1,15 @@
 #![no_main]
 #![no_std]
 
-use sent_driver::sent;
-use sent_driver::{SettingClock, SettingDMA};
-
 // crates de gestion des messages de debug
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 
 use cortex_m_rt::entry;
-use stm32f1xx_hal::pac::TIM2;
-use stm32f1xx_hal::rcc::APB1;
-//use stm32f1::stm32f103;
-//use stm32f1::stm32f103::interrupt;
-use stm32f1xx_hal::{
-    dma::dma1,
-    pac::{self, interrupt},
-    prelude::*,
-};
+use stm32f1::stm32f103;
+use stm32f1::stm32f103::interrupt;
+
+//extern crate tim_sent;
 
 const ADD_TIM2_CCR1: u32 = 0x40000034;
 const ADD_SRAM: u32 = 0x20000200;
@@ -52,31 +44,34 @@ fn DMA1_CHANNEL5() {
 fn main() -> ! {
     // init de la session de debug
     rtt_init_print!();
+    //rprintln!("Coucou !");
 
-    rprintln!("Coucou !");
-
-    let dp = pac::Peripherals::take().unwrap();
+    let dp = stm32f103::Peripherals::take().unwrap();
 
     /////////////////////////////     RCC CONFIG     //////////////////////////////
     let rcc = &dp.RCC;
     // enable GPIO C + AFIO
-    rcc.apb2enr.modify(|_, w| w.iopaen().set_bit());
+    rcc.apb2enr
+        .modify(|_, w| w.iopaen().set_bit().afioen().set_bit());
     // enable TIM2
     rcc.apb1enr.modify(|_, w| w.tim2en().set_bit());
     // enable DMA1 and SRAM
-    rcc.ahbenr.modify(|_, w| w.dma1en().set_bit()); //.sramen().set_bit());
+    rcc.ahbenr
+        .modify(|_, w| w.dma1en().set_bit().sramen().set_bit());
 
     //////////////////////////////    GPIOA CONFIG     /////////////////////////////
     let gpioa = &dp.GPIOA;
     // configure the pin A0 (PA0) as input
-    gpioa.crl.write(|w| w.mode0().input().cnf0().open_drain());
+    gpioa
+        .crl
+        .modify(|_, w| w.mode0().input().cnf0().open_drain());
     // configure the pin D7 (PA8) as output
     gpioa
         .crh
         .modify(|_, w| w.mode8().output().cnf8().push_pull());
 
     ////////////////////////////     TIMER CONFIG      /////////////////////////////
-    let tim2 = dp.TIM2;
+    let tim2 = &dp.TIM2;
     tim2.ccmr1_input().write(|w| w.cc1s().ti1());
     // Capture enabled on falling edge
     tim2.ccer.write(|w| w.cc1p().set_bit().cc1e().set_bit());
@@ -134,7 +129,7 @@ fn main() -> ! {
     }
 
     unsafe {
-        pac::NVIC::unmask(pac::Interrupt::DMA1_CHANNEL5);
+        stm32f103::NVIC::unmask(stm32f103::Interrupt::DMA1_CHANNEL5);
     }
 
     let mut tab_value: [u8; 8] = [0; 8];
@@ -148,17 +143,26 @@ fn main() -> ! {
             if TRANSFERT_COMPLETED == true {
                 while diff < 1350 || diff > 1360 {
                     j = j + 1;
-                    diff = sent::diff_calcul(TAB_TIME[j - 1], TAB_TIME[j]);
+                    diff = diff_calcul(TAB_TIME[j - 1], TAB_TIME[j]);
                 }
 
                 for k in 0..8 {
-                    diff = sent::diff_calcul(TAB_TIME[j], TAB_TIME[j + 1]);
-                    //tab_value[k] = sent::convert_data(diff);
+                    diff = diff_calcul(TAB_TIME[j], TAB_TIME[j + 1]);
+                    tab_value[k] = (diff as f32 * TIMER_PERIOD) as u8;
+
+                    if tab_value[k] > 81 {
+                        trame_failed = true;
+                        TRANSFERT_COMPLETED = false;
+                        dma5.ndtr.write(|w| w.ndt().bits(NB_DATA_DMA));
+                        dma5.cr.modify(|_, w| w.tcie().set_bit().en().set_bit());
+                    } else if tab_value[(k as usize)] >= 36 {
+                        tab_value[k] = (tab_value[k] - 36) / 3;
+                    }
                     j = j + 1;
                 }
 
                 if trame_failed == false {
-                    sent::check(tab_value);
+                    check(tab_value);
                     rprintln!("Trame juste");
                     TRANSFERT_COMPLETED = false;
 
@@ -167,5 +171,29 @@ fn main() -> ! {
                 }
             }
         }
+    }
+}
+
+fn diff_calcul(x: u16, y: u16) -> u16 {
+    let diff = if x > y { 65535 - x + y } else { y - x };
+
+    diff
+}
+
+fn check(tab_value: [u8; 8]) -> bool {
+    let mut checksum: u8 = 5;
+    let crclookup: [u8; 16] = [0, 13, 7, 10, 14, 3, 9, 4, 1, 12, 6, 11, 15, 2, 8, 5];
+
+    for a in 1..7 {
+        checksum = crclookup[(checksum as usize)];
+        checksum = checksum ^ tab_value[a];
+    }
+    checksum = crclookup[(checksum as usize)];
+
+    if tab_value[7] == checksum {
+        //tab_value[7] -> crc
+        true
+    } else {
+        false
     }
 }
