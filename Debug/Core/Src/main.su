@@ -1,0 +1,15 @@
+main.c:127:5:main	8	static
+main.c:213:6:SystemClock_Config	72	static
+main.c:251:13:MX_TIM2_Init	32	static
+main.c:299:13:MX_USART2_UART_Init	8	static
+main.c:330:13:MX_DMA_Init	16	static
+main.c:343:13:MX_GPIO_Init	40	static
+main.c:387:6:tick_data_process	144	static
+main.c:427:6:initialise_tab	24	static
+main.c:434:10:compute_tick	48	static
+main.c:460:9:set_flag_data_ok	24	static
+main.c:470:6:fill_table_ticks	40	static
+main.c:505:6:data_SENT	24	static
+main.c:517:6:BufferDMA_to_ticks	72	static
+main.c:552:7:absolute_val	24	static
+main.c:572:6:Error_Handler	4	static,ignoring_inline_asm
