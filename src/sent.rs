@@ -12,37 +12,37 @@ pub fn init(dma_set: SettingDMA, dp: pac::Peripherals) -> stm32f1xx_hal::dma::dm
 
     let mut rcc = dp.RCC.constrain();
     //////////////////////////////    GPIOA CONFIG     /////////////////////////////
-    let mut gpioa = dp.GPIOA.split(&mut rcc.apb2);
-    gpioa.pa4.into_floating_input(&mut gpioa.crl);
+    let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
+    gpiob.pb0.into_floating_input(&mut gpiob.crl);
 
     let mut flash = dp.FLASH.constrain();
     rcc.cfgr.sysclk(8.mhz()).freeze(&mut flash.acr);
     //let mut delay = Delay::new(cp.SYST, clock);
 
     ////////////////////////////     TIMER CONFIG      /////////////////////////////
-    let timer = dp.TIM2;
+    let timer = dp.TIM3;
     let add_apbenr = unsafe { &(*stm32f1xx_hal::pac::RCC::ptr()).apb1enr };
-    add_apbenr.modify(|_, w| w.tim2en().set_bit());
+    add_apbenr.modify(|_, w| w.tim3en().set_bit());
 
-    timer.ccmr1_input().write(|w| w.cc1s().ti1());
+    timer.ccmr2_input().write(|w| w.cc3s().ti3());
     // Capture enabled on falling edge
-    timer.ccer.write(|w| w.cc1p().set_bit().cc1e().set_bit());
+    timer.ccer.write(|w| w.cc3p().set_bit().cc3e().set_bit());
     unsafe {
         timer.dmar.write(|w| w.dmab().bits(0x81));
     }
     // demarre le timer (bit CEN)
     timer.cr1.write(|w| w.cen().set_bit());
     // interrupt request + DMA request
-    timer.dier.write(|w| w.cc1de().set_bit());
+    timer.dier.write(|w| w.cc3de().set_bit());
 
     ////////////////////////////    DMA CONFIG     /////////////////////////////////
     let mut dma = dp.DMA1.split(&mut rcc.ahb);
 
-    dma.5.set_peripheral_address(dma_set.add_periph, false);
-    dma.5.set_memory_address(dma_set.add_mem, true);
-    dma.5.set_transfer_length(dma_set.nb_data.into()); // into() -> met en usize
+    dma.2.set_peripheral_address(dma_set.add_periph, false);
+    dma.2.set_memory_address(dma_set.add_mem, true);
+    dma.2.set_transfer_length(dma_set.nb_data.into()); // into() -> met en usize
     unsafe {
-        dma.5.ch().cr.write(|w| {
+        dma.2.ch().cr.write(|w| {
             w.dir()
                 .clear_bit()
                 .circ()
@@ -61,8 +61,8 @@ pub fn init(dma_set: SettingDMA, dp: pac::Peripherals) -> stm32f1xx_hal::dma::dm
                 .clear_bit()
         });
     }
-    dma.5.listen(stm32f1xx_hal::dma::Event::TransferComplete);
-    dma.5.start();
+    dma.2.listen(stm32f1xx_hal::dma::Event::TransferComplete);
+    dma.2.start();
 
     /*unsafe {
         pac::NVIC::unmask(pac::Interrupt::DMA1_CHANNEL5);
@@ -142,9 +142,9 @@ pub fn restart(
     dma_set: SettingDMA,
     mut dma: stm32f1xx_hal::dma::dma1::Channels,
 ) -> stm32f1xx_hal::dma::dma1::Channels {
-    dma.5.set_transfer_length(dma_set.nb_data.into());
-    dma.5.ch().cr.modify(|_, w| w.tcie().set_bit());
-    dma.5.start();
+    dma.2.set_transfer_length(dma_set.nb_data.into());
+    dma.2.ch().cr.modify(|_, w| w.tcie().set_bit());
+    dma.2.start();
 
     dma
 }

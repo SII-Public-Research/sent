@@ -16,7 +16,7 @@ pub struct SettingDMA {
 impl SettingDMA {
     pub fn new() -> Self {
         Self {
-            add_periph: 0x40000034,
+            add_periph: 0x4000043C,
             add_mem: 0x20000200,
             nb_data: 0x13,
         }

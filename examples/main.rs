@@ -28,7 +28,7 @@ fn main() -> ! {
     let dp = pac::Peripherals::take().unwrap();
 
     let mut dma = sent::init(dma_set, dp);
-    rprintln!("dma_cr = {}", dma.5.ch().cr.read().bits());
+    rprintln!("dma_cr = {}", dma.2.ch().cr.read().bits());
     let mut tab_time: [u16; 19] = [0; 19];
 
     let add_isr = unsafe { &(*stm32f1xx_hal::pac::DMA1::ptr()).isr };
@@ -38,11 +38,14 @@ fn main() -> ! {
         let mut ind = 0;
         let mut status_trame: bool = true;
 
-        if (add_isr.read().bits() & 0x70000) == 0x70000 {
+        if (add_isr.read().bits() & 0x70) == 0x70 {
+            /*unsafe {rprintln!("tim_ccr3 = {}", &(*pac::TIM3::ptr()).ccr3.read().bits());}
+            unsafe {rprintln!("tim_cnt = {}", &(*pac::TIM3::ptr()).cnt.read().bits());}
+                rprintln!("isr = {}", add_isr.read().bits());*/
             tab_time = sent::time_stock(tab_time, dma_set);
-
-            add_ifcr.write(|w| w.cgif5().set_bit());
-            dma.5.stop();
+            //rprintln!("tab_time = {:?}", tab_time);
+            add_ifcr.write(|w| w.cgif2().set_bit());
+            dma.2.stop();
 
             ind = sent::synchro(tab_time, ind, &mut status_trame);
 
