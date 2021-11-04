@@ -6,8 +6,8 @@ use stm32f1xx_hal::{
 
 use crate::{SettingClock, SettingDMA};
 
-pub fn init(dma_set: SettingDMA) -> stm32f1xx_hal::dma::dma1::Channels {
-    let dp = pac::Peripherals::take().unwrap();
+pub fn init(dma_set: SettingDMA, dp: pac::Peripherals) -> stm32f1xx_hal::dma::dma1::Channels {
+    //let dp = ::take().unwrap();
     //let cp = cortex_m::Peripherals::take().unwrap();
 
     let mut rcc = dp.RCC.constrain();

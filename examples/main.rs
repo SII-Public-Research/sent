@@ -13,7 +13,7 @@ use cortex_m_rt::entry;
 //use stm32f1xx_hal::rcc::APB1;
 //use stm32f1::stm32f103;
 //use stm32f1::stm32f103::interrupt;
-//use stm32f1xx_hal::pac;
+use stm32f1xx_hal::pac;
 
 #[entry]
 fn main() -> ! {
@@ -25,7 +25,9 @@ fn main() -> ! {
     let dma_set: SettingDMA = SettingDMA::new();
     let clock: SettingClock = SettingClock::new();
 
-    let mut dma = sent::init(dma_set);
+    let dp = pac::Peripherals::take().unwrap();
+
+    let mut dma = sent::init(dma_set, dp);
     rprintln!("dma_cr = {}", dma.5.ch().cr.read().bits());
     let mut tab_time: [u16; 19] = [0; 19];
 
