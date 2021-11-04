@@ -9,14 +9,10 @@ use cortex_m_rt::entry;
 use stm32f1::stm32f103;
 use stm32f1::stm32f103::interrupt;
 
-//extern crate tim_sent;
+use sent_driver::sent;
+use sent_driver::{SettingClock, SettingDMA};
 
-const ADD_TIM2_CCR1: u32 = 0x40000034;
 const ADD_SRAM: u32 = 0x20000200;
-const NB_DATA_DMA: u16 = 0x13;
-
-const TIMER_FREQ: f32 = 8.0; // Timer freq  MHz
-const TIMER_PERIOD: f32 = 1.0 / TIMER_FREQ; // Timer period us
 
 static mut TRANSFERT_COMPLETED: bool = false;
 static mut TAB_TIME: [u16; 19] = [0; 19];
@@ -29,7 +25,7 @@ fn DMA1_CHANNEL5() {
         TRANSFERT_COMPLETED = true;
 
         TAB_TIME[(I as usize)] = *((ADD_SRAM + (I * 0x2) as u32) as *mut u16);
-        I = I + 1;
+        I += 1;
         if I > 18 {
             //rprintln!("Time {:?}", TAB_TIME);
             //rprintln!("Time {:?} ", tab_time);
@@ -45,6 +41,9 @@ fn main() -> ! {
     // init de la session de debug
     rtt_init_print!();
     //rprintln!("Coucou !");
+
+    let dma_set: SettingDMA = SettingDMA::new();
+    let clock: SettingClock = SettingClock::new();
 
     let dp = stm32f103::Peripherals::take().unwrap();
 
@@ -90,7 +89,7 @@ fn main() -> ! {
     //let dma_ifcr = &dp.DMA1.ifcr;
     // address TIM2_CCR1 register
     unsafe {
-        dma5.par.write(|w| w.pa().bits(ADD_TIM2_CCR1));
+        dma5.par.write(|w| w.pa().bits(dma_set.add_periph));
         // address memory SRAM
         dma5.mar.write(|w| w.ma().bits(ADD_SRAM));
     }
@@ -99,7 +98,7 @@ fn main() -> ! {
     // total number of data transfered
 
     let dma5 = &dp.DMA1.ch5;
-    dma5.ndtr.write(|w| w.ndt().bits(NB_DATA_DMA));
+    dma5.ndtr.write(|w| w.ndt().bits(dma_set.nb_data));
     //Ch priority : LOW 00, Memory - Peripheral size : 16bits 01, Mem incremente : enable 1, Dir transfer : read from periph 0, channel enable : enable 1
 
     //dma5.ndtr.write(|w| w.ndt().bits(NB_DATA_DMA));
@@ -140,60 +139,36 @@ fn main() -> ! {
             let mut j = 0;
             let mut trame_failed: bool = false;
 
-            if TRANSFERT_COMPLETED == true {
-                while diff < 1350 || diff > 1360 {
-                    j = j + 1;
-                    diff = diff_calcul(TAB_TIME[j - 1], TAB_TIME[j]);
+            if TRANSFERT_COMPLETED {
+                while !(1350..=1360).contains(&diff) {
+                    j += 1;
+                    diff = sent::diff_calcul(TAB_TIME[j - 1], TAB_TIME[j]);
                 }
 
                 for k in 0..8 {
-                    diff = diff_calcul(TAB_TIME[j], TAB_TIME[j + 1]);
-                    tab_value[k] = (diff as f32 * TIMER_PERIOD) as u8;
+                    diff = sent::diff_calcul(TAB_TIME[j], TAB_TIME[j + 1]);
+                    tab_value[k] = (diff as f32 * clock.period) as u8;
 
                     if tab_value[k] > 81 {
                         trame_failed = true;
                         TRANSFERT_COMPLETED = false;
-                        dma5.ndtr.write(|w| w.ndt().bits(NB_DATA_DMA));
+                        dma5.ndtr.write(|w| w.ndt().bits(dma_set.nb_data));
                         dma5.cr.modify(|_, w| w.tcie().set_bit().en().set_bit());
                     } else if tab_value[(k as usize)] >= 36 {
                         tab_value[k] = (tab_value[k] - 36) / 3;
                     }
-                    j = j + 1;
+                    j += 1;
                 }
 
-                if trame_failed == false {
-                    check(tab_value);
+                if !trame_failed {
+                    sent::check(tab_value);
                     rprintln!("Trame juste");
                     TRANSFERT_COMPLETED = false;
 
-                    dma5.ndtr.write(|w| w.ndt().bits(NB_DATA_DMA));
+                    dma5.ndtr.write(|w| w.ndt().bits(dma_set.nb_data));
                     dma5.cr.modify(|_, w| w.tcie().set_bit().en().set_bit());
                 }
             }
         }
-    }
-}
-
-fn diff_calcul(x: u16, y: u16) -> u16 {
-    let diff = if x > y { 65535 - x + y } else { y - x };
-
-    diff
-}
-
-fn check(tab_value: [u8; 8]) -> bool {
-    let mut checksum: u8 = 5;
-    let crclookup: [u8; 16] = [0, 13, 7, 10, 14, 3, 9, 4, 1, 12, 6, 11, 15, 2, 8, 5];
-
-    for a in 1..7 {
-        checksum = crclookup[(checksum as usize)];
-        checksum = checksum ^ tab_value[a];
-    }
-    checksum = crclookup[(checksum as usize)];
-
-    if tab_value[7] == checksum {
-        //tab_value[7] -> crc
-        true
-    } else {
-        false
     }
 }

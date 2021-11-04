@@ -44,12 +44,12 @@ fn main() -> ! {
 
             ind = sent::synchro(tab_time, ind, &mut status_trame);
 
-            if status_trame == false {
+            if !status_trame {
                 rprintln!("Trame fausse1");
             } else {
                 let tab_value = sent::convert_data(clock, tab_time, ind, &mut status_trame);
                 //rprintln!("tab = {:?}", tab_value);
-                if status_trame == false {
+                if !status_trame {
                     rprintln!("Trame fausse2");
                 } else if sent::check(tab_value) {
                     rprintln!("Trame juste");
