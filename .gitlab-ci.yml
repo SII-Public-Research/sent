@@ -9,10 +9,10 @@ image: 'rust:latest'
 stages:
   - check
   - lint
-
+ 
 
 variables:
-  CARGO_HOME: $CI_PROJECT_DIR/cargo_cache
+  CARGO_HOME: $CI_PROJECT_DIR/core/cargo_cache
   DEBIAN_BINARY: "debian-x86_64-${CI_COMMIT_TAG}.tar.bz2"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/gitlab-clippy/${CI_COMMIT_TAG}"
 
@@ -40,8 +40,6 @@ check:
   extends:
     - .common
     - .recreate_cache
-  before_script:
-    - rustup target add thumbv7m-none-eabi
   script:
     - cargo check --workspace
 
@@ -54,7 +52,6 @@ clippy-be:
     - job: check
       artifacts: false
   before_script:
-    - rustup target add thumbv7m-none-eabi
     - rustup component add clippy
   script:
     - cargo clippy
