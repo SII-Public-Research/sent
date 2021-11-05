@@ -12,7 +12,7 @@ stages:
  
 
 variables:
-  CARGO_HOME: $CI_PROJECT_DIR/core/cargo_cache
+  CARGO_HOME: $CI_PROJECT_DIR/cargo_cache
   DEBIAN_BINARY: "debian-x86_64-${CI_COMMIT_TAG}.tar.bz2"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/gitlab-clippy/${CI_COMMIT_TAG}"
 
@@ -40,6 +40,8 @@ check:
   extends:
     - .common
     - .recreate_cache
+  before_script:
+    - rustup target add thumbv7m-none-eabi
   script:
     - cargo check --workspace
 
@@ -53,14 +55,15 @@ clippy-be:
       artifacts: false
   before_script:
     - rustup component add clippy
+    - rustup target add thumbv7m-none-eabi
   script:
-    - cargo clippy
+    - cargo clippy --examples
   after_script:
-    - cargo clippy --message-format=json &> report.json || true
+    - cargo clippy --examples &> report.txt || true
    # - curl -X POST "https://gitlab-cq-rust.herokuapp.com/clippy" --data-binary @clippy.txt --output report.json
   artifacts:
     reports:
-      codequality: report.json
+      codequality: report.txt
     expire_in: 1 week
   rules:
     - if: '$CODE_QUALITY_DISABLED'
