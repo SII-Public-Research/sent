@@ -1,8 +1,2 @@
 target/
 *swp
-
-print_1000.rs
-test.rs
-tim_sent.rs
-tim_se,t_v2.rs
-timer_input_capture_v2.rs
