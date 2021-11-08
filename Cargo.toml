@@ -1,8 +1,10 @@
 [package]
 edition = "2018"
 name = "sent-driver"
+description = "A driver for SENT protocol"
 categories = ["embedded", "no-std"]
 version = "0.1.0"
+license = "OBSD"
 
 
 [dependencies]
