@@ -18,3 +18,8 @@ sent-driver = "0.1.0"
 Please refer to this link to understand SENT protocol : https://www.renesas.com/us/en/document/whp/tutorial-digital-sent-interface-zssc416xzssc417x
 
 Please refer to the stm32f1xx_hal librairie (docs + examples): https://crates.io/crates/stm32f1xx-hal
+
+# License
+This project is open source software, licensed under the terms of the Zero Clause BSD License (0BSD, for short). This basically means you can do anything with the software, without any restrictions, but you can't hold the authors liable for problems.
+
+See LICENSE.md for full details.

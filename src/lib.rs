@@ -2,9 +2,7 @@
 
 //use embedded_hal::{digital::v2::InputPin, blocking::delay::DelayUs};
 
-mod receiver;
 pub mod sent;
-mod transmitter;
 
 #[derive(Clone, Copy)]
 pub struct SettingDMA {
